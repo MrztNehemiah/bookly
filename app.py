@@ -72,6 +72,14 @@ class Book(BaseModel):
     isbn: str
     available: bool
 
+class BookUpdate(BaseModel):
+    title: str
+    author: str
+    genre: str
+    year: int
+    isbn: str
+    available: bool
+
 @app.get('/books', response_model= list[Book])
 async def view_books():
     return bookshelf
@@ -84,7 +92,7 @@ async def create_book(book_data:Book, status_code=status.HTTP_201_CREATED) -> di
     return new_book
 
 @app.get('/books/{book_id}')
-async def view_a_book(book_id):
+async def view_a_book(book_id) -> dict:
     book_id = int(book_id)
     for book in bookshelf:
         if book['id'] == book_id:
@@ -92,9 +100,24 @@ async def view_a_book(book_id):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Book Not Found')
 
 @app.patch('/book/{book_id}')
-async def update_book_shelf(book_id):
-    pass
+async def update_book(book_id, book_update_data:BookUpdate) -> dict:
+    book_id = int(book_id)
+    for book in bookshelf:
+        if book['id'] == book_id:
+            book['title'] = book_update_data.title
+            book['author'] = book_update_data.author
+            book['genre'] = book_update_data.genre
+            book['year'] = book_update_data.year
+            book['isbn'] = book_update_data.isbn
+            book['available'] = book_update_data.available
+            return book
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Book Not Found')
 
 @app.delete('/book/{book_id}')
-async def delete_book(book_id):
-    pass
+async def delete_book(book_id) -> None:
+    book_id = int(book_id)
+    for book in bookshelf:
+        if book['id'] == book_id:
+            bookshelf.remove(book)
+            return {}
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Book Not Found')
