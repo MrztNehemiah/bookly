@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -72,21 +73,28 @@ class Book(BaseModel):
     available: bool
 
 @app.get('/books', response_model= list[Book])
-def view_books():
+async def view_books():
     return bookshelf
 
 @app.post('/books')
-def create_book():
-    pass
+async def create_book(book_data:Book, status_code=status.HTTP_201_CREATED) -> dict:
+    #Generate a dictionary representation of the model
+    new_book = book_data.model_dump()
+    bookshelf.append(new_book)
+    return new_book
 
-@app.get('/book/{book_id}')
-def view_a_book(book_id):
-    pass
+@app.get('/books/{book_id}')
+async def view_a_book(book_id):
+    book_id = int(book_id)
+    for book in bookshelf:
+        if book['id'] == book_id:
+            return book
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Book Not Found')
 
 @app.patch('/book/{book_id}')
-def update_book_shelf(book_id):
+async def update_book_shelf(book_id):
     pass
 
 @app.delete('/book/{book_id}')
-def delete_book(book_id):
+async def delete_book(book_id):
     pass
