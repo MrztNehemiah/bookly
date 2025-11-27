@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -59,6 +60,16 @@ bookshelf = [
         "available": False
     }
 ]
+
+#Validating the Books info types with pydantic BaseModel
+class Book(BaseModel):
+    id: int
+    title: str
+    author: str
+    genre: str
+    year: int
+    isbn: str
+    available = bool
 
 @app.get('/books')
 def view_books():
