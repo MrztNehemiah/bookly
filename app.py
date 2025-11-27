@@ -69,9 +69,9 @@ class Book(BaseModel):
     genre: str
     year: int
     isbn: str
-    available = bool
+    available: bool
 
-@app.get('/books')
+@app.get('/books', response_model= list[Book])
 def view_books():
     return bookshelf
 
