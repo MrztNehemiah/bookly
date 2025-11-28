@@ -7,6 +7,7 @@ class Settings(BaseSettings):
         env_file= '.env',
         extra= 'ignore'
     )
+Config = Settings()
 
 CORS_CONFIG = {
     "allow_origins": ["*"],
