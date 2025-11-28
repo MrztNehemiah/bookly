@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from config.cors import CORS_CONFIG
+from src.config import CORS_CONFIG
 from src.book.routes import book_router
 
 version = 'v1'

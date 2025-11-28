@@ -1,0 +1,3 @@
+.booklyenv/
+__pycache
+.env
